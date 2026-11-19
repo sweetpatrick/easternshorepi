@@ -1,0 +1,798 @@
+<!doctype html>
+<html lang="en-CA">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Eastern Shore Private Eye</title>
+<meta name="description" content="Case files, clues and family webs for the Eastern Shore's finest private eye.">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#2c5c4f">
+<link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32.png">
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Private Eye">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="robots" content="noindex">
+<style>:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Alfa+Slab+One&family=Atkinson+Hyperlegible:wght@400;700&family=Special+Elite&display=swap">
+<style>
+/* Layout: a detective's case file on a foggy Shore morning — one column on the phone, cards in two columns on wider screens */
+:root{
+  --bg:#dde4e7; --ink:#1c2a37; --muted:#56666f; --card:#f4ecd6; --card-edge:#d9cba6;
+  --accent:#2c5c4f; --accent-ink:#ffffff; --stamp:#a63e2b; --line:#b7c3c9; --field:#fffdf6; --hi:#e9d9a8;
+  --display:"Alfa Slab One", Rockwell, "Roboto Slab", Georgia, serif;
+  --typed:"Special Elite", "Courier New", Courier, monospace;
+  --body:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#121a21; --ink:#e5e9eb; --muted:#9aa9b2; --card:#1d2832; --card-edge:#2f3f4b;
+  --accent:#6fb29b; --accent-ink:#0e1a16; --stamp:#e47a62; --line:#34444f; --field:#16212a; --hi:#2c3a2f; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#121a21; --ink:#e5e9eb; --muted:#9aa9b2; --card:#1d2832; --card-edge:#2f3f4b;
+  --accent:#6fb29b; --accent-ink:#0e1a16; --stamp:#e47a62; --line:#34444f; --field:#16212a; --hi:#2c3a2f; color-scheme:dark}
+
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--body);font-size:17px;line-height:1.5;
+  padding-left:max(16px, env(safe-area-inset-left, 0px));padding-right:max(16px, env(safe-area-inset-right, 0px));padding-block:20px 48px}
+.wrap{max-width:860px;margin:0 auto;display:flex;flex-direction:column;gap:20px}
+h1,h2,h3{text-wrap:balance;margin:0}
+button,input,textarea,select{font:inherit;color:inherit}
+button{cursor:pointer}
+a{color:var(--accent)}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.stack{display:flex;flex-direction:column;gap:16px}
+
+/* Header / licence */
+.licence{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.badge{width:64px;height:64px;border-radius:50%;border:3px double var(--stamp);display:grid;place-items:center;
+  font-family:var(--typed);color:var(--stamp);font-size:12px;text-align:center;line-height:1.1;transform:rotate(-8deg);flex:none}
+.licence h1{font-family:var(--display);font-weight:400;font-size:clamp(26px,6vw,40px);line-height:1.05;letter-spacing:.01em}
+.licence p{margin:4px 0 0;font-family:var(--typed);font-size:14px;color:var(--muted);letter-spacing:.04em}
+.licence .titles{min-width:0;flex:1}
+
+/* Partner */
+.partner{display:flex;gap:12px;align-items:flex-start}
+.partner .face{flex:none;width:44px;height:44px;border-radius:50%;background:var(--accent);color:var(--accent-ink);
+  display:grid;place-items:center;font-family:var(--display);font-size:20px}
+.partner .bubble{background:var(--card);border:1px solid var(--card-edge);border-radius:14px;padding:10px 14px;min-width:0;flex:1}
+.partner .who{font-family:var(--typed);font-size:13px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase}
+.partner .say{margin:2px 0 0;font-size:18px}
+@media (prefers-reduced-motion:no-preference){.bubble.pop{animation:pop .35s ease}}
+@keyframes pop{from{transform:translateY(4px);opacity:.4}to{transform:none;opacity:1}}
+
+/* Tabs */
+.tabs{display:flex;gap:4px;border-bottom:2px solid var(--card-edge)}
+.tab{background:none;border:1px solid transparent;border-bottom:none;border-radius:6px 6px 0 0;padding:8px 18px;
+  font-family:var(--typed);font-size:16px;letter-spacing:.06em;color:var(--muted);margin-bottom:-2px}
+.tab[aria-selected="true"]{background:var(--card);border-color:var(--card-edge);color:var(--ink);border-bottom:2px solid var(--card)}
+
+/* Panels & controls */
+.panel{background:var(--card);border:1px solid var(--card-edge);border-radius:6px;padding:16px;display:flex;flex-direction:column;gap:12px;min-width:0}
+.label{font-family:var(--typed);font-size:14px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+h2.sec{font-family:var(--display);font-weight:400;font-size:22px}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.row > input,.row > select{flex:1 1 160px;min-width:0}
+input,textarea,select{background:var(--field);border:1px solid var(--line);border-radius:6px;padding:10px 12px;width:100%}
+textarea{min-height:70px;resize:vertical}
+.btn{border:none;border-radius:6px;padding:10px 16px;background:var(--accent);color:var(--accent-ink);font-weight:700}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.danger{background:var(--stamp);color:var(--accent-ink)}
+.btn.small{padding:6px 10px;font-size:14px}
+.muted{color:var(--muted)}
+.linkish{background:none;border:none;padding:0;color:var(--accent);font-weight:700;text-align:left;text-decoration:underline;text-underline-offset:3px}
+details > summary{cursor:pointer;color:var(--muted);font-size:15px}
+details[open] > summary{margin-bottom:8px}
+
+/* Cards */
+.cards{display:grid;grid-template-columns:1fr;gap:12px}
+@media (min-width:700px){.cards{grid-template-columns:1fr 1fr}}
+.casecard{position:relative;text-align:left;background:var(--card);border:1px solid var(--card-edge);border-radius:6px;
+  padding:16px 16px 14px;display:flex;flex-direction:column;gap:6px;min-width:0;overflow:hidden}
+.casecard::before{content:"";position:absolute;top:0;left:16px;width:84px;height:6px;background:var(--card-edge);border-radius:0 0 4px 4px}
+.casecard h3{font-size:19px;padding-right:72px;overflow-wrap:anywhere}
+.casecard .meta{font-family:var(--typed);font-size:13px;color:var(--muted)}
+.casecard:hover{border-color:var(--accent)}
+.stamp{position:absolute;top:12px;right:10px;font-family:var(--typed);font-size:13px;letter-spacing:.12em;padding:2px 8px;
+  border:2px solid currentColor;border-radius:4px;transform:rotate(6deg)}
+.stamp.solved{color:var(--stamp)}
+.stamp.open{color:var(--accent)}
+.example{font-family:var(--typed);font-size:12px;color:var(--muted);letter-spacing:.06em}
+
+/* Case / person heads */
+.head{display:flex;flex-direction:column;gap:6px}
+.head h2{font-family:var(--display);font-weight:400;font-size:clamp(24px,5vw,32px);line-height:1.1;overflow-wrap:anywhere}
+.head .meta{font-family:var(--typed);color:var(--muted);font-size:15px}
+.aka{font-family:var(--typed);font-size:15px;color:var(--muted)}
+.aka s{text-decoration-color:var(--stamp)}
+.solvedbanner{font-family:var(--typed);color:var(--stamp);border:2px solid var(--stamp);border-radius:4px;padding:6px 12px;align-self:flex-start;transform:rotate(-2deg);letter-spacing:.1em}
+
+ul.plain{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+ul.plain li{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-bottom:1px dashed var(--line)}
+ul.plain li:last-child{border-bottom:none}
+ul.plain li .txt{flex:1;min-width:0;overflow-wrap:anywhere}
+.x{background:none;border:none;color:var(--muted);font-size:22px;line-height:1;padding:2px 6px;flex:none}
+.note{color:var(--muted);font-size:15px}
+.factmeta{font-size:14px;color:var(--muted);margin-top:2px;overflow-wrap:anywhere}
+.chips{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.chip{font-size:14px;color:var(--accent);border:1px solid var(--line);border-radius:999px;padding:3px 10px;text-decoration:none;background:none}
+.chip:hover{border-color:var(--accent)}
+.chip.case{color:var(--ink)}
+
+/* Webs */
+.web{width:100%;overflow-x:auto}
+.web svg{display:block;width:100%;max-width:640px;margin:0 auto;height:auto}
+.web .edge{stroke:var(--muted);stroke-width:1.5}
+.web .arrowhead{fill:var(--muted)}
+.web .elabel{fill:var(--stamp);font-family:var(--typed);font-size:11px;paint-order:stroke;stroke:var(--card);stroke-width:3px}
+.web .node{fill:var(--accent)}
+.web g.pn{cursor:pointer}
+.web g.pn:hover .node,.web g.pn:focus .node{fill:var(--stamp)}
+.web .ntext{fill:var(--ink);font-size:12px;font-weight:700;font-family:var(--body);paint-order:stroke;stroke:var(--card);stroke-width:3px}
+.web .ninit{fill:var(--accent-ink);font-size:14px;font-weight:700;font-family:var(--body)}
+.confirm{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sizebtn{flex:none;border:1px solid var(--line);background:var(--card);border-radius:6px;padding:6px 10px;font-weight:700;line-height:1}
+.sizebtn .a1{font-size:14px}.sizebtn .a2{font-size:20px}
+.seg{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--line);border-radius:6px;overflow:hidden;align-self:flex-start}
+.seg button{border:none;background:transparent;padding:10px 14px}
+.seg button + button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);font-weight:700}
+.status{display:flex;gap:8px;align-items:center;font-weight:700}
+.dot{width:10px;height:10px;border-radius:50%;background:var(--muted);flex:none}
+.dot.ok{background:var(--accent)}.dot.warn{background:var(--stamp)}
+.help{margin:0;color:var(--muted);font-size:15px;max-width:62ch}
+.okmsg{color:var(--accent);font-weight:700}
+.errmsg{color:var(--stamp);font-weight:700}
+.foot{font-size:14px;color:var(--muted);text-align:center}
+</style>
+
+<div class="wrap">
+  <header class="licence">
+    <div class="badge" aria-hidden="true">LIC.<br>902<br>ESPE</div>
+    <div class="titles">
+      <h1>Eastern Shore Private Eye</h1>
+      <p>Licensed snoop · Porters Lake to Sheet Harbour</p>
+    </div>
+    <button class="sizebtn" id="sizebtn" aria-label="Change text size"><span class="a1">A</span><span class="a2">A</span></button>
+  </header>
+
+  <section class="partner" aria-live="polite">
+    <div class="face" aria-hidden="true">D</div>
+    <div class="bubble" id="bubble">
+      <div class="who">Your partner, Dougie</div>
+      <p class="say" id="say">Right then, my dear. Who've we got today?</p>
+    </div>
+  </section>
+
+  <nav class="tabs" role="tablist">
+    <button class="tab" role="tab" id="tab-cases" data-tab="cases">Cases</button>
+    <button class="tab" role="tab" id="tab-people" data-tab="people">People</button>
+    <button class="tab" role="tab" id="tab-settings" data-tab="settings">Settings</button>
+  </nav>
+
+  <main id="app"></main>
+
+  <p class="foot" id="syncline">Your files are saved on this device.</p>
+</div>
+
+<script>
+const KEY = "espe-v2", OLDKEY = "espe-cases-v1";
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const uid = () => Math.random().toString(36).slice(2, 9);
+const today = () => new Date().toLocaleDateString("en-CA", {year:"numeric", month:"short", day:"numeric"});
+const norm = s => String(s).toLowerCase().replace(/[^a-z ]/g,"").replace(/\s+/g," ").trim();
+
+/* ---------- Dougie ---------- */
+const QUIPS = {
+  start:["Right then, my dear. Who've we got today?","Kettle's on. What's the mystery?","Another day on the Shore, another face ya can't place."],
+  newcase:["New case! Some day for it.","Right, open the file. Where'd ya see 'em?","Here we go again. I'll get the biscuits."],
+  clue:["Ohh, now that's a good one. Write it down before it's gone.","Now we're cookin'.","Some clue, that is.","Wouldn't that frost ya. Keep goin'."],
+  person:["New name on the board. The plot thickens.","Another one for the files. Everyone's somebody's cousin out here.","Mark 'em down, dear. We'll sort out who's who."],
+  bringin:["Back again, are they? Funny how that works.","Pulled from the files. I knew they'd turn up."],
+  link:["Married in, was she? Course she was.","Dig far enough and everyone on the Shore is related.","Now there's a connection. I knew it."],
+  fact:["Into the file it goes.","Good. And ya wrote down where ya got it. That's proper detective work.","Some good. Every bit counts."],
+  unmask:["Unmasked! {old} is {new}. I had my suspicions.","Well now. {old} turns out to be {new}. Who knew? You did."],
+  merge:["Same person all along! Two files, one face.","Well wouldn't that frost ya. They were one and the same."],
+  solve:["Case closed! Another one for the books, ya great sleuth.","Solved before supper. Some good.","Three hours on one fella and he turns out to be your cousin's dentist. Classic."],
+  reopen:["Back on the case. A good detective never lets go."],
+  remove:["Gone. Like it was never there."],
+  backup:["Tucked away safe. A good detective always keeps copies.","Backed up! Now if your phone goes in the harbour, we're grand."],
+  restore:["Files restored. Right back where we left off.","Back from the dead, like a good soap opera character."],
+  people:["The whole Shore, all tangled up. Lovely.","Look at that web. Ya could knit a sweater with it."],
+  idle:["Case cold as the harbour in February.","Take a break, dear. They'll still be a mystery tomorrow.","You'd find a needle in a haystack and tell me who knit the haystack."]
+};
+const pick = a => a[Math.floor(Math.random()*a.length)];
+function say(text){ const b = $("#bubble"); $("#say").textContent = text; b.classList.remove("pop"); void b.offsetWidth; b.classList.add("pop"); }
+
+/* ---------- Data ---------- */
+const EXAMPLE = {
+  people:[
+    {id:"p1",example:true,name:"Red raincoat woman",aka:[],note:"Maybe 60. The mystery herself.",facts:[]},
+    {id:"p2",example:true,name:"Gerald",aka:[],note:"Knows everyone at the Legion",facts:[{id:"f1",text:"Plays cribbage at the Legion Thursday nights",source:"Linda told me",added:"Oct 11, 2026"}]},
+    {id:"p3",example:true,name:"The brother",aka:[],note:"Back from Alberta this summer",facts:[]},
+    {id:"q1",example:true,name:"Dave Hiltz",aka:["Ball cap fella"],note:"Volunteer firefighter",facts:[{id:"f2",text:"Was at Linda's 50th",source:"Linda's party photos",added:"Sep 23, 2026"}]},
+    {id:"q2",example:true,name:"Cousin Linda",aka:[],note:"Her husband's on the fire department",facts:[]}
+  ],
+  links:[
+    {id:"l1",a:"p1",b:"p3",label:"sister"},
+    {id:"l2",a:"p2",b:"p1",label:"knows from church?"},
+    {id:"l3",a:"q2",b:"q1",label:"husband's friend"},
+    {id:"l4",a:"p2",b:"q1",label:"Legion buddy"}
+  ],
+  cases:[
+    {id:"ex1",example:true,status:"open",title:"The woman at Sobeys",where:"Sobeys, Porters Lake · by the bakery",opened:"Oct 10, 2026",
+      clues:["Said 'how's your mother keeping?'","Red raincoat","Mentioned her brother just moved back from Alberta"],personIds:["p1","p2","p3"],verdict:""},
+    {id:"ex2",example:true,status:"solved",title:"Fella in the Tim's lineup",where:"Tim Hortons, Musquodoboit Harbour",opened:"Sep 22, 2026",
+      clues:["Waved like he knew me","Ball cap from the fire department"],personIds:["q1","q2"],
+      verdict:"Linda's husband's buddy from the fire hall. Met him at her 50th."}
+  ]
+};
+function migrate(old){
+  const st = {people:[],links:[],cases:[]};
+  old.forEach(c => { const map = {};
+    (c.people||[]).forEach(p => { const id = c.id+"-"+p.id; map[p.id] = id; st.people.push({id,name:p.name,aka:[],note:p.note||"",facts:[],example:!!c.example}); });
+    (c.links||[]).forEach(l => { if(map[l.a] && map[l.b]) st.links.push({id:uid(),a:map[l.a],b:map[l.b],label:l.label}); });
+    st.cases.push({id:c.id,title:c.title,where:c.where,opened:c.opened,status:c.status,clues:c.clues||[],personIds:Object.values(map),verdict:c.verdict||"",example:c.example});
+  });
+  return st;
+}
+function load(){
+  try{ const r = localStorage.getItem(KEY); if(r) return JSON.parse(r);
+       const o = localStorage.getItem(OLDKEY); if(o) return migrate(JSON.parse(o)); }catch(e){}
+  return JSON.parse(JSON.stringify(EXAMPLE));
+}
+let S = load();
+function saveLocal(){ try{ localStorage.setItem(KEY, JSON.stringify(S)); }catch(e){} }
+function save(){ S._updated = Date.now(); saveLocal(); queueWrite(); }
+
+/* ---------- Sync across her devices (private to her account) ---------- */
+let sync = {state:"local", at:0}, docRef = null, writing = false, writeAgain = false, writeTimer = null, deferredRemote = false;
+const SYNC_LIMIT = 240000;
+function setSync(state, at){ sync.state = state; if(at) sync.at = at; showSync(); }
+function ago(t){ if(!t) return ""; const m = Math.round((Date.now()-t)/60000);
+  return m < 1 ? "just now" : m < 60 ? `${m} min ago` : m < 1440 ? `${Math.round(m/60)} h ago` : new Date(t).toLocaleDateString("en-CA",{month:"short",day:"numeric"}); }
+const SYNC_TEXT = {
+  local:   ["ok", "Saved on this device."],
+  connecting:["", "Connecting to your account…"],
+  saving:  ["ok", "Saving to your account…"],
+  synced:  ["ok", "Synced to your account. Your phone, iPad and laptop all see the same files."],
+  offline: ["warn", "Can't reach your account right now. Changes are saved on this device and will sync when the connection is back."],
+  readonly:["warn", "Saved on this device only. Syncing needs edit access to this app."],
+  full:    ["warn", "Your files are too big to sync. Save a backup, then delete some old cases."]
+};
+function showSync(){
+  const [cls, text] = SYNC_TEXT[sync.state] || SYNC_TEXT.local;
+  const line = $("#syncline"); if(line) line.textContent = text + (sync.state === "synced" && sync.at ? ` Last synced ${ago(sync.at)}.` : "");
+  const st = $("#syncstatus"); if(st) st.innerHTML = `<span class="dot ${cls}"></span><span>${esc(text)}</span>`;
+}
+function queueWrite(){
+  if(!docRef) return;
+  clearTimeout(writeTimer); writeTimer = setTimeout(flush, 900);
+}
+async function flush(){
+  if(!docRef) return;
+  if(writing){ writeAgain = true; return; }
+  const state = JSON.stringify(S);
+  if(state.length > SYNC_LIMIT){ setSync("full"); return; }
+  writing = true; setSync("saving");
+  const body = {state, updated:S._updated || Date.now()};
+  try{ await docRef.set(body); setSync("synced", Date.now()); }
+  catch(e){
+    if(e && e.code === "unavailable"){
+      await new Promise(r => setTimeout(r, 1500 + Math.random()*1500));
+      try{ await docRef.set(body); setSync("synced", Date.now()); }catch(e2){ setSync("offline"); }
+    } else if(e && (e.code === "invalid_argument" || e.code === "not_granted" || e.code === "revoked")){ docRef = null; setSync("readonly"); }
+    else if(e && e.code === "quota_exceeded"){ setSync("full"); }
+    else setSync("offline");
+  }
+  finally{ writing = false; if(writeAgain){ writeAgain = false; flush(); } }
+}
+function typing(){ const a = document.activeElement; return a && $("#app").contains(a) && (a.tagName === "TEXTAREA" || (a.tagName === "INPUT" && a.value)); }
+function applyRemote(remote){
+  if(!remote || !Array.isArray(remote.people) || !Array.isArray(remote.cases) || !Array.isArray(remote.links)) return;
+  S = remote; saveLocal();
+  if(typing()) deferredRemote = true; else render();
+}
+document.addEventListener("focusout", () => setTimeout(() => { if(deferredRemote && !typing()){ deferredRemote = false; render(); } }, 50));
+async function startSync(){
+  if(!window.claude || typeof window.claude.use !== "function"){ setSync("local"); return; }
+  setSync("connecting");
+  let d = null, u = null, id = null;
+  try{ [d, u] = await Promise.all([window.claude.use("db"), window.claude.use("user")]); id = u ? await u.id() : null; }catch(e){}
+  if(!d || !id){ setSync("local"); return; }
+  try{ docRef = d.doc("data/users/" + id + "/files"); }catch(e){ setSync("local"); return; }
+  let timer = setTimeout(() => setSync("offline"), 10000);
+  docRef.onSnapshot(snap => {
+    if(snap.metadata.hasPendingWrites) return;
+    if(!snap.metadata.fromCache){ clearTimeout(timer); }
+    if(!snap.exists){ if(!snap.metadata.fromCache) flush(); return; }
+    const body = snap.data() || {}, ru = Number(body.updated) || 0, lu = S._updated || 0;
+    if(ru > lu){ try{ const r = JSON.parse(body.state); r._updated = ru; applyRemote(r); }catch(e){} setSync("synced", Date.now()); }
+    else if(ru < lu){ if(!snap.metadata.fromCache) flush(); }
+    else if(!snap.metadata.fromCache && sync.state !== "saving") setSync("synced", Date.now());
+  }, err => { clearTimeout(timer); docRef = null; setSync(err && err.code === "revoked" ? "local" : "offline"); });
+}
+setInterval(showSync, 60000);
+
+/* ---------- Text size (per device) ---------- */
+const SIZES = [{k:"normal",z:1,label:"Regular"},{k:"large",z:1.15,label:"Large"},{k:"xl",z:1.3,label:"Extra large"}];
+let textSize = "normal";
+try{ textSize = localStorage.getItem("espe-textsize") || "normal"; }catch(e){}
+function applySize(){ const s = SIZES.find(x => x.k === textSize) || SIZES[0]; $(".wrap").style.zoom = s.z; }
+function setSize(k){ textSize = k; try{ localStorage.setItem("espe-textsize", k); }catch(e){} applySize(); if(view.name === "settings") render(); }
+$("#sizebtn").onclick = () => { const i = SIZES.findIndex(x => x.k === textSize); const n = SIZES[(i+1) % SIZES.length]; setSize(n.k); say(n.k === "normal" ? "Back to regular print." : n.k === "large" ? "Bit bigger. Easier on the eyes." : "Big print! Like the bingo cards."); };
+const person = id => S.people.find(p => p.id === id);
+const casesFor = pid => S.cases.filter(c => c.personIds.includes(pid));
+const linksFor = pid => S.links.filter(l => l.a === pid || l.b === pid);
+const other = (l, pid) => l.a === pid ? l.b : l.a;
+const byName = (a,b) => a.name.localeCompare(b.name);
+
+/* ---------- Navigation ---------- */
+let view = {name:"cases"}, navStack = [], confirmKey = null;
+function go(v){ navStack.push(view); view = v; confirmKey = null; render(); window.scrollTo(0,0); }
+function back(){ view = navStack.pop() || {name:"cases"}; confirmKey = null; render(); window.scrollTo(0,0); }
+$$(".tab").forEach(t => t.onclick = () => { navStack = []; view = {name:t.dataset.tab}; confirmKey = null; render(); window.scrollTo(0,0); if(t.dataset.tab === "people") say(pick(QUIPS.people)); });
+
+function render(){
+  const tab = (view.name === "people" || view.name === "person") ? "people" : view.name === "settings" ? "settings" : "cases";
+  $$(".tab").forEach(t => t.setAttribute("aria-selected", t.dataset.tab === tab));
+  const app = $("#app");
+  if(view.name === "case"){ const c = S.cases.find(x => x.id === view.id); if(c){ app.innerHTML = caseView(c); bindCase(c); return; } }
+  if(view.name === "person"){ const p = person(view.id); if(p){ app.innerHTML = personView(p); bindPerson(p); return; } }
+  if(view.name === "people"){ app.innerHTML = peopleView(); bindPeople(); return; }
+  if(view.name === "settings"){ app.innerHTML = settingsView(); bindSettings(); return; }
+  view = {name:"cases"}; app.innerHTML = listView(); bindList();
+}
+function bindNav(){
+  $$("[data-goperson]").forEach(b => b.onclick = e => { e.preventDefault(); go({name:"person", id:b.dataset.goperson}); });
+  $$("[data-gocase]").forEach(b => b.onclick = e => { e.preventDefault(); go({name:"case", id:b.dataset.gocase}); });
+  const bk = $("#back"); if(bk) bk.onclick = back;
+}
+
+/* ---------- Shared bits ---------- */
+function searchChips(name){
+  const q = s => "https://www.google.com/search?q=" + encodeURIComponent(s);
+  const n = `"${name}"`;
+  return `<div class="chips">
+    <a class="chip" href="${q(n+" obituary Nova Scotia")}" target="_blank" rel="noopener">Obituaries</a>
+    <a class="chip" href="${q(n+" funeral home Nova Scotia")}" target="_blank" rel="noopener">Funeral homes</a>
+    <a class="chip" href="${q(n+" Eastern Shore Nova Scotia news")}" target="_blank" rel="noopener">Local news</a>
+  </div>`;
+}
+function sourceHtml(src){
+  if(!src) return "";
+  const s = src.trim();
+  if(/^https?:\/\//i.test(s)){ let host = s; try{ host = new URL(s).hostname.replace(/^www\./,""); }catch(e){}
+    return `Source: <a href="${esc(s)}" target="_blank" rel="noopener">${esc(host)}</a>`; }
+  return `Source: ${esc(s)}`;
+}
+function personOptions(list, selected){ return list.slice().sort(byName).map(p => `<option value="${p.id}" ${p.id===selected?"selected":""}>${esc(p.name)}</option>`).join(""); }
+
+/* Force layout: spreads connected people out so the web stays readable */
+function layout(ids, links, W, H){
+  const n = ids.length, pos = {};
+  if(n === 0) return pos;
+  if(n === 1){ pos[ids[0]] = {x:W/2, y:H/2}; return pos; }
+  ids.forEach((id,i) => { const a = -Math.PI/2 + i*2*Math.PI/n; pos[id] = {x:W/2 + 0.35*W*Math.cos(a), y:H/2 + 0.35*H*Math.sin(a)}; });
+  if(n <= 6) return pos;
+  const k = Math.sqrt(W*H/n) * 0.8; let t = W/8;
+  const E = links.filter(l => pos[l.a] && pos[l.b]);
+  for(let it=0; it<250; it++){
+    const d = {}; ids.forEach(id => d[id] = {x:0,y:0});
+    for(let i=0;i<n;i++) for(let j=i+1;j<n;j++){
+      const A = pos[ids[i]], B = pos[ids[j]]; let dx = A.x-B.x, dy = A.y-B.y, dist = Math.hypot(dx,dy) || 0.01;
+      const f = k*k/dist; d[ids[i]].x += dx/dist*f; d[ids[i]].y += dy/dist*f; d[ids[j]].x -= dx/dist*f; d[ids[j]].y -= dy/dist*f; }
+    E.forEach(l => { const A = pos[l.a], B = pos[l.b]; let dx = A.x-B.x, dy = A.y-B.y, dist = Math.hypot(dx,dy) || 0.01;
+      const f = dist*dist/k; d[l.a].x -= dx/dist*f; d[l.a].y -= dy/dist*f; d[l.b].x += dx/dist*f; d[l.b].y += dy/dist*f; });
+    ids.forEach(id => { d[id].x += (W/2 - pos[id].x)*0.02*k/10; d[id].y += (H/2 - pos[id].y)*0.02*k/10;
+      const m = Math.hypot(d[id].x, d[id].y) || 0.01; pos[id].x += d[id].x/m*Math.min(m,t); pos[id].y += d[id].y/m*Math.min(m,t); });
+    t *= 0.98;
+  }
+  const xs = ids.map(id => pos[id].x), ys = ids.map(id => pos[id].y);
+  const minX = Math.min(...xs), maxX = Math.max(...xs), minY = Math.min(...ys), maxY = Math.max(...ys);
+  ids.forEach(id => { pos[id].x = 40 + (pos[id].x-minX)/((maxX-minX)||1)*(W-80); pos[id].y = 30 + (pos[id].y-minY)/((maxY-minY)||1)*(H-80); });
+  return pos;
+}
+function webSvg(ids, links, W, H, label){
+  const pos = layout(ids, links, W, H);
+  const edges = links.filter(l => pos[l.a] && pos[l.b]).map(l => { const A = pos[l.a], B = pos[l.b];
+    const dx = B.x-A.x, dy = B.y-A.y, len = Math.hypot(dx,dy) || 1, ux = dx/len, uy = dy/len;
+    const x1 = A.x + ux*18, y1 = A.y + uy*18, x2 = B.x - ux*18, y2 = B.y - uy*18;
+    return `<line class="edge" x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" marker-end="url(#arrow)"/><text class="elabel" x="${(A.x+B.x)/2}" y="${(A.y+B.y)/2-4}" text-anchor="middle">${esc(l.label.slice(0,22))}</text>`; }).join("");
+  const nodes = ids.map(id => { const p = person(id), {x,y} = pos[id]; const short = p.name.length > 18 ? p.name.slice(0,17)+"…" : p.name;
+    return `<g class="pn" tabindex="0" role="link" aria-label="Open ${esc(p.name)}" data-node="${id}"><circle class="node" cx="${x}" cy="${y}" r="16"/>
+      <text class="ninit" x="${x}" y="${y+5}" text-anchor="middle">${esc(p.name.trim()[0]?.toUpperCase() || "?")}</text>
+      <text class="ntext" x="${x}" y="${y+32}" text-anchor="middle">${esc(short)}</text></g>`; }).join("");
+  return `<div class="web"><svg viewBox="-30 -10 ${W+60} ${H+30}" role="img" aria-label="${esc(label)}"><defs><marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="10" markerHeight="10" markerUnits="userSpaceOnUse" orient="auto"><path class="arrowhead" d="M0,0 L10,5 L0,10 z"/></marker></defs>${edges}${nodes}</svg></div>`;
+}
+function bindWeb(){
+  $$("[data-node]").forEach(g => { const open = () => go({name:"person", id:g.dataset.node});
+    g.onclick = open; g.onkeydown = e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); open(); } }; });
+}
+
+/* ---------- Cases list ---------- */
+function caseCard(c){
+  return `<button class="casecard" data-gocase="${c.id}">
+    <span class="stamp ${c.status}">${c.status === "solved" ? "SOLVED" : "OPEN"}</span>
+    <h3>${esc(c.title)}</h3>
+    <span class="meta">${esc(c.where || "Location unknown")} · ${esc(c.opened)}</span>
+    <span class="muted">${c.clues.length} clue${c.clues.length===1?"":"s"} · ${c.personIds.length} on the board</span>
+    ${c.example ? `<span class="example">EXAMPLE CASE</span>` : ""}
+  </button>`;
+}
+function listView(){
+  const open = S.cases.filter(c => c.status !== "solved"), solved = S.cases.filter(c => c.status === "solved");
+  return `<div class="stack">
+    <form class="panel" id="newcase">
+      <span class="label">Open a new case</span>
+      <input id="nc-title" placeholder="Who's the mystery? e.g. Man at the post office" required>
+      <input id="nc-where" placeholder="Where'd you see them? e.g. Lawrencetown Beach">
+      <div class="row"><button class="btn" type="submit">Open the file</button></div>
+    </form>
+    <section class="stack" style="gap:10px">
+      <h2 class="sec">Open cases <span class="muted" style="font-family:var(--body);font-size:16px">(${open.length})</span></h2>
+      ${open.length ? `<div class="cards">${open.map(caseCard).join("")}</div>` : `<p class="muted">Nothing open. Suspiciously quiet out there.</p>`}
+    </section>
+    <section class="stack" style="gap:10px">
+      <h2 class="sec">Solved <span class="muted" style="font-family:var(--body);font-size:16px">(${solved.length})</span></h2>
+      ${solved.length ? `<div class="cards">${solved.map(caseCard).join("")}</div>` : `<p class="muted">No solved cases yet. Give it time.</p>`}
+    </section>
+  </div>`;
+}
+function bindList(){
+  $("#newcase").onsubmit = e => { e.preventDefault();
+    const title = $("#nc-title").value.trim(); if(!title) return;
+    const c = {id:uid(), status:"open", title, where:$("#nc-where").value.trim(), opened:today(), clues:[], personIds:[], verdict:""};
+    S.cases.unshift(c); save(); go({name:"case", id:c.id}); say(pick(QUIPS.newcase)); };
+  bindNav();
+}
+
+/* ---------- Case ---------- */
+function caseView(c){
+  const members = c.personIds.map(person).filter(Boolean);
+  const outsiders = S.people.filter(p => !c.personIds.includes(p.id));
+  const caseLinks = S.links.filter(l => c.personIds.includes(l.a) && c.personIds.includes(l.b));
+  return `<div class="stack">
+    <div class="row"><button class="btn ghost small" id="back">← Back</button></div>
+    <div class="head">
+      ${c.example ? `<span class="example">EXAMPLE CASE · delete it whenever you like</span>` : ""}
+      <h2>${esc(c.title)}</h2>
+      <span class="meta">${esc(c.where || "Location unknown")} · opened ${esc(c.opened)}</span>
+      ${c.status === "solved" ? `<span class="solvedbanner">CASE CLOSED</span>` : ""}
+    </div>
+
+    <section class="panel">
+      <h2 class="sec">Clues</h2>
+      ${c.clues.length ? `<ul class="plain">${c.clues.map((t,i) => `<li><span class="txt">${esc(t)}</span><button class="x" data-delclue="${i}" aria-label="Remove clue">×</button></li>`).join("")}</ul>` : `<p class="muted">What do you remember? Clothes, who they mentioned, what they asked about.</p>`}
+      <form class="row" id="addclue"><input id="clue" placeholder="e.g. Asked about the new church hall"><button class="btn" type="submit">Add clue</button></form>
+    </section>
+
+    <section class="panel">
+      <h2 class="sec">People on the board</h2>
+      ${members.length ? `<ul class="plain">${members.map(p => { const elsewhere = casesFor(p.id).filter(o => o.id !== c.id);
+        return `<li><div class="txt">
+          <button class="linkish" data-goperson="${p.id}">${esc(p.name)}</button>
+          ${p.aka.length ? `<div class="aka">once “${esc(p.aka[p.aka.length-1])}”</div>` : ""}
+          ${p.note ? `<div class="note">${esc(p.note)}</div>` : ""}
+          ${p.facts.length ? `<div class="factmeta">${p.facts.length} fact${p.facts.length===1?"":"s"} on file</div>` : ""}
+          ${elsewhere.length ? `<div class="chips">${elsewhere.map(o => `<button class="chip case" data-gocase="${o.id}">Also in: ${esc(o.title)}</button>`).join("")}</div>` : ""}
+        </div><button class="x" data-unboard="${p.id}" aria-label="Take ${esc(p.name)} off this case">×</button></li>`; }).join("")}</ul>` : `<p class="muted">Nobody on the board yet.</p>`}
+      <form class="row" id="addperson">
+        <input id="pname" placeholder="Name or description, e.g. Lady with the Corgi" required>
+        <input id="pnote" placeholder="Note, e.g. married a Myers">
+        <button class="btn" type="submit">Add new</button>
+      </form>
+      ${outsiders.length ? `<form class="row" id="bringin">
+        <select id="bring" aria-label="Someone already in your files">${personOptions(outsiders)}</select>
+        <button class="btn ghost" type="submit">Bring in from the files</button>
+      </form>` : ""}
+    </section>
+
+    <section class="panel">
+      <h2 class="sec">The web</h2>
+      ${members.length ? webSvg(c.personIds.filter(person), caseLinks, 320, 260, "Connection web for this case") : `<p class="muted">Add a couple of people and draw the lines between them.</p>`}
+      ${members.length >= 2 ? `<form class="row" id="addlink">
+        <select id="la" aria-label="First person">${personOptions(members, members[0].id)}</select>
+        <select id="lb" aria-label="Second person">${personOptions(members, members[1].id)}</select>
+        <input id="ll" placeholder="How? e.g. sister-in-law" required>
+        <button class="btn" type="submit">Connect</button>
+      </form>` : ""}
+      ${caseLinks.length ? `<ul class="plain">${caseLinks.map(l => `<li><span class="txt">${esc(person(l.a).name)} → ${esc(person(l.b).name)}: <em>${esc(l.label)}</em></span><button class="x" data-dellink="${l.id}" aria-label="Remove connection">×</button></li>`).join("")}</ul>` : ""}
+    </section>
+
+    <section class="panel">
+      <h2 class="sec">The verdict</h2>
+      <textarea id="verdict" placeholder="Who was it, then?">${esc(c.verdict)}</textarea>
+      <div class="row">
+        ${c.status === "solved" ? `<button class="btn ghost" id="reopen">Reopen case</button>` : `<button class="btn danger" id="solve">Case closed!</button>`}
+        <button class="btn ghost" id="copy">Copy case summary</button>
+      </div>
+      <span class="muted" id="copied" hidden>Copied. Paste it into a text to the family.</span>
+    </section>
+
+    <div class="confirm">
+      ${confirmKey === "case" ? `<span>Shred this case? The people stay in your files.</span><button class="btn danger small" id="delyes">Yes, shred it</button><button class="btn ghost small" id="delno">Keep it</button>`
+        : `<button class="btn ghost small" id="del">Delete case</button>`}
+    </div>
+  </div>`;
+}
+function summary(c){
+  const ids = c.personIds;
+  const links = S.links.filter(l => ids.includes(l.a) && ids.includes(l.b));
+  return [`CASE FILE: ${c.title}`, `Seen: ${c.where || "unknown"} (${c.opened})`,
+    c.clues.length ? "Clues:\n" + c.clues.map(t => "- " + t).join("\n") : "",
+    links.length ? "Connections:\n" + links.map(l => `- ${person(l.a).name} → ${person(l.b).name}: ${l.label}`).join("\n") : "",
+    c.verdict ? `Verdict: ${c.verdict}` : "Verdict: still on the case",
+    "— Eastern Shore Private Eye"].filter(Boolean).join("\n\n");
+}
+function bindCase(c){
+  const redo = () => { save(); render(); };
+  bindNav(); bindWeb();
+  $("#addclue").onsubmit = e => { e.preventDefault(); const v = $("#clue").value.trim(); if(!v) return; c.clues.push(v); redo(); say(pick(QUIPS.clue)); $("#clue").focus(); };
+  $("#addperson").onsubmit = e => { e.preventDefault(); const n = $("#pname").value.trim(); if(!n) return;
+    const match = S.people.find(p => !c.personIds.includes(p.id) && (norm(p.name) === norm(n) || p.aka.some(a => norm(a) === norm(n))));
+    if(match){ c.personIds.push(match.id); redo(); say(`Well now, look who's back. ${match.name} is already in your files, so I pulled their file in.`); return; }
+    const p = {id:uid(), name:n, aka:[], note:$("#pnote").value.trim(), facts:[]};
+    S.people.push(p); c.personIds.push(p.id); redo(); say(pick(QUIPS.person)); };
+  const bi = $("#bringin"); if(bi) bi.onsubmit = e => { e.preventDefault(); const id = $("#bring").value; if(!id) return; c.personIds.push(id); redo(); say(pick(QUIPS.bringin)); };
+  const al = $("#addlink"); if(al) al.onsubmit = e => { e.preventDefault(); const a = $("#la").value, b = $("#lb").value, l = $("#ll").value.trim();
+    if(a === b){ say("Connecting someone to themselves? Even out here that's a stretch, dear."); return; }
+    if(!l) return; S.links.push({id:uid(), a, b, label:l}); redo(); say(pick(QUIPS.link)); };
+  $$("[data-delclue]").forEach(b => b.onclick = () => { c.clues.splice(+b.dataset.delclue,1); redo(); say(pick(QUIPS.remove)); });
+  $$("[data-dellink]").forEach(b => b.onclick = () => { S.links = S.links.filter(l => l.id !== b.dataset.dellink); redo(); });
+  $$("[data-unboard]").forEach(b => b.onclick = () => { c.personIds = c.personIds.filter(id => id !== b.dataset.unboard); redo(); say("Off the board. They're still in your files if ya need 'em."); });
+  $("#verdict").oninput = e => { c.verdict = e.target.value; save(); };
+  const s = $("#solve"); if(s) s.onclick = () => { c.verdict = $("#verdict").value; c.status = "solved"; redo(); say(pick(QUIPS.solve)); };
+  const r = $("#reopen"); if(r) r.onclick = () => { c.status = "open"; redo(); say(pick(QUIPS.reopen)); };
+  $("#copy").onclick = () => copyText(summary(c), () => { $("#copied").hidden = false; say("Spread the word. Gently."); });
+  const d = $("#del"); if(d) d.onclick = () => { confirmKey = "case"; render(); };
+  const dy = $("#delyes"); if(dy) dy.onclick = () => { S.cases = S.cases.filter(x => x.id !== c.id); save(); navStack = []; view = {name:"cases"}; confirmKey = null; render(); say(pick(QUIPS.remove)); };
+  const dn = $("#delno"); if(dn) dn.onclick = () => { confirmKey = null; render(); };
+}
+function copyText(text, done){
+  const fallback = () => { const t = document.createElement("textarea"); t.value = text; document.body.appendChild(t); t.select(); try{ document.execCommand("copy"); done(); }catch(e){} t.remove(); };
+  try { navigator.clipboard.writeText(text).then(done, fallback); } catch(e){ fallback(); }
+}
+
+/* ---------- People ---------- */
+let peopleFilter = "";
+function peopleView(){
+  const ids = S.people.map(p => p.id);
+  const f = norm(peopleFilter);
+  const list = S.people.filter(p => !f || norm(p.name).includes(f) || p.aka.some(a => norm(a).includes(f)) || norm(p.note).includes(f)).sort(byName);
+  return `<div class="stack">
+    <section class="panel">
+      <h2 class="sec">The whole Shore</h2>
+      <p class="muted" style="margin:0">Everyone in your files and every connection, across all your cases. Tap a name to open their file.</p>
+      ${ids.length ? webSvg(ids, S.links, 460, Math.max(300, Math.min(560, 120 + ids.length*22)), "Connections between everyone in your files") : `<p class="muted">No one in your files yet. Add people from a case.</p>`}
+    </section>
+    <section class="panel">
+      <div class="row" style="justify-content:space-between"><h2 class="sec">Your files <span class="muted" style="font-family:var(--body);font-size:16px">(${S.people.length})</span></h2></div>
+      <input id="pfilter" type="search" placeholder="Find someone by name, old name or note" value="${esc(peopleFilter)}">
+      ${list.length ? `<ul class="plain">${list.map(p => { const cs = casesFor(p.id), ls = linksFor(p.id);
+        return `<li><div class="txt"><button class="linkish" data-goperson="${p.id}">${esc(p.name)}</button>
+          ${p.aka.length ? `<div class="aka">once ${p.aka.map(a => "“"+esc(a)+"”").join(", ")}</div>` : ""}
+          <div class="factmeta">${cs.length} case${cs.length===1?"":"s"} · ${ls.length} connection${ls.length===1?"":"s"} · ${p.facts.length} fact${p.facts.length===1?"":"s"}${p.example ? " · example" : ""}</div>
+        </div></li>`; }).join("")}</ul>` : `<p class="muted">Nobody by that name. Yet.</p>`}
+      <details>
+        <summary>Add someone who isn't in a case</summary>
+        <form class="row" id="newperson"><input id="np-name" placeholder="Name" required><input id="np-note" placeholder="Note"><button class="btn" type="submit">Add to files</button></form>
+      </details>
+    </section>
+  </div>`;
+}
+function bindPeople(){
+  bindNav(); bindWeb();
+  const pf = $("#pfilter");
+  pf.oninput = e => { peopleFilter = e.target.value; const pos = e.target.selectionStart; render(); const n = $("#pfilter"); n.focus(); try{ n.setSelectionRange(pos,pos); }catch(err){} };
+  $("#newperson").onsubmit = e => { e.preventDefault(); const n = $("#np-name").value.trim(); if(!n) return;
+    const p = {id:uid(), name:n, aka:[], note:$("#np-note").value.trim(), facts:[]}; S.people.push(p); save(); go({name:"person", id:p.id}); say(pick(QUIPS.person)); };
+}
+
+/* ---------- Person ---------- */
+function personView(p){
+  const cs = casesFor(p.id), ls = linksFor(p.id), others = S.people.filter(o => o.id !== p.id);
+  const notIn = S.cases.filter(c => !c.personIds.includes(p.id));
+  return `<div class="stack">
+    <div class="row"><button class="btn ghost small" id="back">← Back</button></div>
+    <div class="head">
+      <span class="label">Person file${p.example ? " · example" : ""}</span>
+      <h2>${esc(p.name)}</h2>
+      ${p.aka.length ? `<span class="aka">Previously known as ${p.aka.map(a => "<s>"+esc(a)+"</s>").join(", ")}</span>` : ""}
+      ${searchChips(p.name)}
+    </div>
+
+    <section class="panel">
+      <h2 class="sec">Who is it, really?</h2>
+      <form class="row" id="rename">
+        <input id="newname" placeholder="Real name, once you've cracked it" value="">
+        <button class="btn" type="submit">Update name</button>
+      </form>
+      <span class="muted" style="font-size:15px">The old name is kept as “previously known as” so you can still find them.</span>
+      <label class="label" for="pnote2">Note</label>
+      <textarea id="pnote2" placeholder="Anything to remember about them">${esc(p.note)}</textarea>
+    </section>
+
+    <section class="panel">
+      <h2 class="sec">What we know</h2>
+      ${p.facts.length ? `<ul class="plain">${p.facts.map(f => `<li><div class="txt">${esc(f.text)}
+          <div class="factmeta">${esc(f.added)}${f.source ? " · " + sourceHtml(f.source) : ""}</div></div>
+          <button class="x" data-delfact="${f.id}" aria-label="Remove fact">×</button></li>`).join("")}</ul>` : `<p class="muted">Nothing on file yet. Add what you find and where you found it.</p>`}
+      <form class="stack" style="gap:8px" id="addfact">
+        <input id="ftext" placeholder="What did you find? e.g. Grew up in Jeddore, married into the Myers" required>
+        <div class="row"><input id="fsrc" placeholder="Where from? Paste a link, or e.g. 'Linda told me'"><button class="btn" type="submit">Add to file</button></div>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2 class="sec">Connections</h2>
+      ${ls.length ? `<ul class="plain">${ls.map(l => { const o = person(other(l, p.id)); const dir = l.a === p.id ? `${esc(l.label)} →` : `← ${esc(l.label)}`;
+        return `<li><span class="txt"><em>${dir}</em> <button class="linkish" data-goperson="${o.id}">${esc(o.name)}</button></span><button class="x" data-dellink="${l.id}" aria-label="Remove connection">×</button></li>`; }).join("")}</ul>` : `<p class="muted">No connections yet.</p>`}
+      ${others.length ? `<form class="row" id="addlink2">
+        <select id="lo" aria-label="Connect to">${personOptions(others)}</select>
+        <input id="ll2" placeholder="How? e.g. first cousin" required>
+        <button class="btn" type="submit">Connect</button>
+      </form>` : ""}
+    </section>
+
+    <section class="panel">
+      <h2 class="sec">Cases</h2>
+      ${cs.length ? `<div class="chips">${cs.map(c => `<button class="chip case" data-gocase="${c.id}">${esc(c.title)}${c.status === "solved" ? " · solved" : ""}</button>`).join("")}</div>` : `<p class="muted">Not in any case.</p>`}
+      ${notIn.length ? `<form class="row" id="tocase"><select id="tc" aria-label="Case">${notIn.map(c => `<option value="${c.id}">${esc(c.title)}</option>`).join("")}</select><button class="btn ghost" type="submit">Add to case</button></form>` : ""}
+    </section>
+
+    ${others.length ? `<section class="panel">
+      <h2 class="sec">Same person as someone else?</h2>
+      <p class="muted" style="margin:0">If two files turn out to be the same person, combine them. Facts, old names, connections and cases all come along.</p>
+      <div class="row"><select id="mergewith" aria-label="Same person as">${personOptions(others)}</select>
+        ${confirmKey === "merge" ? `<button class="btn danger" id="mergeyes">Yes, combine</button><button class="btn ghost" id="mergeno">Cancel</button>` : `<button class="btn ghost" id="merge">Combine files</button>`}</div>
+      ${confirmKey === "merge" ? `<span class="muted">This keeps <strong>${esc(p.name)}</strong> and folds the other file into it.</span>` : ""}
+    </section>` : ""}
+
+    <div class="confirm">
+      ${confirmKey === "person" ? `<span>Remove ${esc(p.name)} from your files and every case?</span><button class="btn danger small" id="pdelyes">Yes, remove</button><button class="btn ghost small" id="pdelno">Keep</button>`
+        : `<button class="btn ghost small" id="pdel">Remove from files</button>`}
+    </div>
+  </div>`;
+}
+let mergeChoice = null;
+function bindPerson(p){
+  const redo = () => { save(); render(); };
+  bindNav();
+  if(mergeChoice && $("#mergewith")){ try{ $("#mergewith").value = mergeChoice; }catch(e){} }
+  $("#rename").onsubmit = e => { e.preventDefault(); const n = $("#newname").value.trim(); if(!n || n === p.name) return;
+    const old = p.name; if(!p.aka.includes(old)) p.aka.push(old); p.aka = p.aka.filter(a => a !== n); p.name = n; redo();
+    say(pick(QUIPS.unmask).replace("{old}", old).replace("{new}", n)); };
+  $("#pnote2").oninput = e => { p.note = e.target.value; save(); };
+  $("#addfact").onsubmit = e => { e.preventDefault(); const t = $("#ftext").value.trim(); if(!t) return;
+    p.facts.push({id:uid(), text:t, source:$("#fsrc").value.trim(), added:today()}); redo(); say(pick(QUIPS.fact)); };
+  $$("[data-delfact]").forEach(b => b.onclick = () => { p.facts = p.facts.filter(f => f.id !== b.dataset.delfact); redo(); });
+  $$("[data-dellink]").forEach(b => b.onclick = () => { S.links = S.links.filter(l => l.id !== b.dataset.dellink); redo(); });
+  const al = $("#addlink2"); if(al) al.onsubmit = e => { e.preventDefault(); const o = $("#lo").value, l = $("#ll2").value.trim(); if(!l) return;
+    S.links.push({id:uid(), a:p.id, b:o, label:l}); redo(); say(pick(QUIPS.link)); };
+  const tc = $("#tocase"); if(tc) tc.onsubmit = e => { e.preventDefault(); const c = S.cases.find(x => x.id === $("#tc").value); if(!c) return; c.personIds.push(p.id); redo(); say(pick(QUIPS.bringin)); };
+  const m = $("#merge"); if(m) m.onclick = () => { mergeChoice = $("#mergewith").value; confirmKey = "merge"; render(); };
+  const mn = $("#mergeno"); if(mn) mn.onclick = () => { confirmKey = null; mergeChoice = null; render(); };
+  const my = $("#mergeyes"); if(my) my.onclick = () => {
+    const q = person($("#mergewith").value); if(!q) return;
+    [q.name, ...q.aka].forEach(a => { if(a !== p.name && !p.aka.includes(a)) p.aka.push(a); });
+    p.facts.push(...q.facts); if(q.note && !p.note.includes(q.note)) p.note = p.note ? p.note + "\n" + q.note : q.note;
+    S.links.forEach(l => { if(l.a === q.id) l.a = p.id; if(l.b === q.id) l.b = p.id; });
+    S.links = S.links.filter(l => l.a !== l.b);
+    S.cases.forEach(c => { if(c.personIds.includes(q.id)){ c.personIds = c.personIds.filter(id => id !== q.id); if(!c.personIds.includes(p.id)) c.personIds.push(p.id); } });
+    S.people = S.people.filter(x => x.id !== q.id);
+    confirmKey = null; mergeChoice = null; redo(); say(pick(QUIPS.merge)); };
+  const d = $("#pdel"); if(d) d.onclick = () => { confirmKey = "person"; render(); };
+  const dn = $("#pdelno"); if(dn) dn.onclick = () => { confirmKey = null; render(); };
+  const dy = $("#pdelyes"); if(dy) dy.onclick = () => {
+    S.people = S.people.filter(x => x.id !== p.id); S.links = S.links.filter(l => l.a !== p.id && l.b !== p.id);
+    S.cases.forEach(c => c.personIds = c.personIds.filter(id => id !== p.id)); save(); back(); say(pick(QUIPS.remove)); };
+}
+
+/* ---------- Settings ---------- */
+let restoreText = "", restorePending = null, restoreMsg = "", backupMsg = "";
+function backupJson(){ return JSON.stringify({app:"eastern-shore-private-eye", version:2, saved:new Date().toISOString(), data:S}, null, 1); }
+function parseBackup(text){
+  let o; try{ o = JSON.parse(text); }catch(e){ return null; }
+  const d = o && o.data ? o.data : o;
+  if(!d || !Array.isArray(d.people) || !Array.isArray(d.links) || !Array.isArray(d.cases)) return null;
+  return d;
+}
+function settingsView(){
+  const exampleCount = S.cases.filter(c => c.example).length + S.people.filter(p => p.example).length;
+  return `<div class="stack">
+    <section class="panel">
+      <h2 class="sec">Text size</h2>
+      <div class="seg" role="group" aria-label="Text size">${SIZES.map(s => `<button data-size="${s.k}" aria-pressed="${s.k === textSize}">${s.label}</button>`).join("")}</div>
+      <p class="help">Each device remembers its own size. The <strong>AA</strong> button at the top also switches it.</p>
+    </section>
+
+    <section class="panel">
+      <h2 class="sec">Your devices</h2>
+      <div class="status" id="syncstatus"></div>
+      <p class="help">${sync.state === "local"
+        ? "Your cases and people are saved on this device only, and nobody else can see them. To move them to another device, save a backup here and restore it there."
+        : "When you're signed in, your cases and people are saved to your account, so your phone, iPad and laptop all show the same files. They're private to your account. Nobody else who opens this app sees them."}</p>
+    </section>
+
+    <section class="panel">
+      <h2 class="sec">Make a backup</h2>
+      <p class="help">A copy of every case and person, in case a phone goes in the harbour. Make one every month or so and email it to yourself.</p>
+      <div class="row">
+        <button class="btn" id="savebackup">Save backup file</button>
+        <button class="btn ghost" id="copybackup">Copy backup</button>
+      </div>
+      ${backupMsg ? `<span class="okmsg">${esc(backupMsg)}</span>` : ""}
+    </section>
+
+    <section class="panel">
+      <h2 class="sec">Restore from a backup</h2>
+      <p class="help">Choose a backup file, or paste a copied backup below. You'll get to confirm before anything changes.</p>
+      <label class="label" for="restorefile">Backup file</label>
+      <input type="file" id="restorefile" accept=".json,application/json,text/plain">
+      <label class="label" for="restoretext">Or paste it here</label>
+      <textarea id="restoretext" placeholder='Starts with {"app":"eastern-shore-private-eye"…'>${esc(restoreText)}</textarea>
+      ${restorePending ? `<div class="confirm"><span>This backup has <strong>${restorePending.cases.length} case${restorePending.cases.length===1?"":"s"}</strong> and <strong>${restorePending.people.length} ${restorePending.people.length===1?"person":"people"}</strong>. It replaces everything you have now.</span>
+          <button class="btn danger small" id="restoreyes">Yes, restore it</button><button class="btn ghost small" id="restoreno">Cancel</button></div>`
+        : `<div class="row"><button class="btn ghost" id="restorecheck">Restore</button></div>`}
+      ${restoreMsg ? `<span class="${restoreMsg.startsWith("That") ? "errmsg" : "okmsg"}">${esc(restoreMsg)}</span>` : ""}
+    </section>
+
+    ${exampleCount ? `<section class="panel">
+      <h2 class="sec">Example cases</h2>
+      <p class="help">The app came with two example cases and five example people to show how it works. Clear them when you're ready to start your own files.</p>
+      <div class="confirm">${confirmKey === "examples" ? `<span>Remove all the examples?</span><button class="btn danger small" id="exyes">Yes, clear them</button><button class="btn ghost small" id="exno">Keep them</button>` : `<button class="btn ghost" id="exclear">Clear the examples</button>`}</div>
+    </section>` : ""}
+  </div>`;
+}
+function bindSettings(){
+  showSync();
+  $$("[data-size]").forEach(b => b.onclick = () => setSize(b.dataset.size));
+  $("#savebackup").onclick = async () => {
+    const name = "private-eye-backup-" + new Date().toISOString().slice(0,10) + ".json";
+    let dl = null; try{ dl = window.claude && await window.claude.use("downloads"); }catch(e){}
+    if(!dl){
+      try{ const url = URL.createObjectURL(new Blob([backupJson()], {type:"application/json"}));
+        const a = document.createElement("a"); a.href = url; a.download = name; document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 5000);
+        backupMsg = "Backup saved as " + name + ". Check your Downloads (on an iPhone or iPad, the Files app)."; render(); say(pick(QUIPS.backup)); }
+      catch(e){ copyText(backupJson(), () => { backupMsg = "Couldn't save a file, so I copied the backup instead. Paste it into an email to yourself."; render(); }); }
+      return; }
+    try{ await dl.save({filename:name, data:new Blob([backupJson()], {type:"application/json"})}); backupMsg = "Backup saved as " + name + "."; render(); say(pick(QUIPS.backup)); }
+    catch(e){ if(e && e.code === "declined") return; copyText(backupJson(), () => { backupMsg = "Couldn't save a file, so I copied the backup instead. Paste it into an email to yourself."; render(); }); }
+  };
+  $("#copybackup").onclick = () => copyText(backupJson(), () => { backupMsg = "Backup copied. Paste it into an email to yourself."; render(); say(pick(QUIPS.backup)); });
+  $("#restoretext").oninput = e => { restoreText = e.target.value; };
+  $("#restorefile").onchange = e => { const f = e.target.files && e.target.files[0]; if(!f) return;
+    const r = new FileReader(); r.onload = () => { restoreText = String(r.result || ""); check(); }; r.readAsText(f); };
+  const check = () => { const d = parseBackup(restoreText.trim());
+    if(!d){ restorePending = null; restoreMsg = "That doesn't look like a Private Eye backup. Check you copied the whole thing."; }
+    else { restorePending = d; restoreMsg = ""; }
+    render(); };
+  const rc = $("#restorecheck"); if(rc) rc.onclick = check;
+  const rn = $("#restoreno"); if(rn) rn.onclick = () => { restorePending = null; render(); };
+  const ry = $("#restoreyes"); if(ry) ry.onclick = () => {
+    S = restorePending; restorePending = null; restoreText = ""; restoreMsg = "Restored. All your cases and people are back."; save(); render(); say(pick(QUIPS.restore)); };
+  const ec = $("#exclear"); if(ec) ec.onclick = () => { confirmKey = "examples"; render(); };
+  const en = $("#exno"); if(en) en.onclick = () => { confirmKey = null; render(); };
+  const ey = $("#exyes"); if(ey) ey.onclick = () => {
+    const gone = new Set(S.people.filter(p => p.example).map(p => p.id));
+    S.people = S.people.filter(p => !p.example); S.links = S.links.filter(l => !gone.has(l.a) && !gone.has(l.b));
+    S.cases = S.cases.filter(c => !c.example); S.cases.forEach(c => c.personIds = c.personIds.filter(id => !gone.has(id)));
+    confirmKey = null; save(); render(); say("Examples gone. The files are all yours now, detective."); };
+}
+
+applySize();
+say(pick(QUIPS.start));
+render();
+startSync();
+if("serviceWorker" in navigator && location.protocol === "https:"){ window.addEventListener("load", () => navigator.serviceWorker.register("sw.js").catch(() => {})); }
+</script>
+
+</body>
+</html>
